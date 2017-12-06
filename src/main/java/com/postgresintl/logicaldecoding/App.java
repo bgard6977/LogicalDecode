@@ -38,7 +38,7 @@ public class App
     {
         try
         {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost/test","davec","");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost/postgres","postgres","postgres");
         }
         catch (SQLException ex)
         {
@@ -139,7 +139,7 @@ public class App
                         .withSlotName(SLOT_NAME)
                         .withStartPosition(lsn)
                         .withSlotOption("include-xids", true)
-                        .withSlotOption("skip-empty-xacts", true)
+                        //.withSlotOption("skip-empty-xacts", true)
                         .withStatusInterval(20, TimeUnit.SECONDS)
                         .start();
         ByteBuffer buffer;
@@ -151,7 +151,8 @@ public class App
                 continue;
             }
 
-            System.out.println( toString(buffer));
+            String str = toString(buffer);
+            System.out.println( str);
             //feedback
             stream.setAppliedLSN(stream.getLastReceiveLSN());
             stream.setFlushedLSN(stream.getLastReceiveLSN());
@@ -179,17 +180,17 @@ public class App
 
     private void openReplicationConnection() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("user","davec");
-        properties.setProperty("password","");
+        properties.setProperty("user","postgres");
+        properties.setProperty("password","postgres");
         PGProperty.ASSUME_MIN_SERVER_VERSION.set(properties, "9.4");
         PGProperty.REPLICATION.set(properties, "database");
         PGProperty.PREFER_QUERY_MODE.set(properties, "simple");
-        replicationConnection = DriverManager.getConnection("jdbc:postgresql://localhost/test",properties);
+        replicationConnection = DriverManager.getConnection("jdbc:postgresql://localhost/postgres",properties);
     }
 
     public static void main( String[] args )
     {
-        String pluginName = "test_decoding";
+        String pluginName = "wal2json";
 
         App app = new App();
         app.createConnection();
