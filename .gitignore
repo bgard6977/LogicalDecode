@@ -1,0 +1,8 @@
+# IntelliJ
+*.ipr
+*.iml
+*.iws
+.idea/
+.ideaDataSources/
+dataSources/
+
